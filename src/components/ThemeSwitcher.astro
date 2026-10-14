@@ -1,0 +1,75 @@
+---
+const options = [
+  {
+    value: 'light',
+    label: 'Tema claro',
+    icon: 'M10 2a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 10 2Zm0 13a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 10 15Zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm5.66-2.66a.75.75 0 0 1 0 1.06l-1.06 1.06a.75.75 0 0 1-1.06-1.06l1.06-1.06a.75.75 0 0 1 1.06 0Zm-9.2 9.2a.75.75 0 0 1 0 1.06L5.4 15.66a.75.75 0 0 1-1.06-1.06l1.06-1.06a.75.75 0 0 1 1.06 0ZM18 10a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 18 10ZM5 10a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 5 10Zm10.66 5.66a.75.75 0 0 1-1.06 0l-1.06-1.06a.75.75 0 0 1 1.06-1.06l1.06 1.06a.75.75 0 0 1 0 1.06Zm-9.2-9.2a.75.75 0 0 1-1.06 0L4.34 5.4a.75.75 0 0 1 1.06-1.06l1.06 1.06a.75.75 0 0 1 0 1.06Z',
+  },
+  {
+    value: 'dark',
+    label: 'Tema oscuro',
+    icon: 'M7.46 2.07a.75.75 0 0 1 .2.83 6.5 6.5 0 0 0 8.44 8.44.75.75 0 0 1 .98.98A8 8 0 1 1 6.63 1.87a.75.75 0 0 1 .83.2Z',
+  },
+  {
+    value: 'system',
+    label: 'Tema automático',
+    icon: 'M2 4.25A2.25 2.25 0 0 1 4.25 2h11.5A2.25 2.25 0 0 1 18 4.25v8.5A2.25 2.25 0 0 1 15.75 15h-3.1l.43 1.5h.67a.75.75 0 0 1 0 1.5h-7.5a.75.75 0 0 1 0-1.5h.67l.43-1.5h-3.1A2.25 2.25 0 0 1 2 12.75v-8.5Zm1.5 0v7.5h13v-7.5a.75.75 0 0 0-.75-.75H4.25a.75.75 0 0 0-.75.75Z',
+  },
+];
+---
+
+<div
+  role="group"
+  aria-label="Tema"
+  class="inline-flex rounded-full border border-slate-200 bg-white p-1 shadow-sm dark:border-slate-700 dark:bg-slate-900"
+>
+  {
+    options.map(({ value, label, icon }) => (
+      <button
+        type="button"
+        data-theme-option={value}
+        aria-pressed="false"
+        aria-label={label}
+        title={label}
+        class="rounded-full p-1.5 text-slate-500 transition hover:text-slate-900 aria-pressed:bg-sky-100 aria-pressed:text-sky-700 dark:text-slate-400 dark:hover:text-slate-100 dark:aria-pressed:bg-sky-950 dark:aria-pressed:text-sky-300"
+      >
+        <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" clip-rule="evenodd" d={icon} />
+        </svg>
+      </button>
+    ))
+  }
+</div>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-theme-option]');
+  const media = matchMedia('(prefers-color-scheme: dark)');
+
+  function current(): string {
+    try {
+      return localStorage.getItem('theme') ?? 'system';
+    } catch {
+      return 'system';
+    }
+  }
+
+  function apply(theme: string) {
+    const dark = theme === 'dark' || (theme === 'system' && media.matches);
+    document.documentElement.classList.toggle('dark', dark);
+    document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+    buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.themeOption === theme)));
+  }
+
+  buttons.forEach((button) =>
+    button.addEventListener('click', () => {
+      const theme = button.dataset.themeOption!;
+      try {
+        if (theme === 'system') localStorage.removeItem('theme');
+        else localStorage.setItem('theme', theme);
+      } catch {}
+      apply(theme);
+    }),
+  );
+  media.addEventListener('change', () => apply(current()));
+  apply(current());
+</script>

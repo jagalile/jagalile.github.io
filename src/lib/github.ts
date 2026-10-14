@@ -31,10 +31,10 @@ interface Repo {
 
 const API = 'https://api.github.com';
 
-function headers(accept = 'application/vnd.github+json'): HeadersInit {
+function headers(): HeadersInit {
   const token = import.meta.env.GITHUB_TOKEN ?? process.env.GITHUB_TOKEN;
   return {
-    Accept: accept,
+    Accept: 'application/vnd.github+json',
     'User-Agent': `${GITHUB_USER}-portfolio`,
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
@@ -54,19 +54,6 @@ async function fetchRepos(): Promise<Repo[]> {
   }
 }
 
-async function fetchReadme(repo: string): Promise<string | null> {
-  const res = await fetch(`${API}/repos/${GITHUB_USER}/${repo}/readme`, {
-    headers: headers('application/vnd.github.raw+json'),
-  });
-  return res.ok ? res.text() : null;
-}
-
-/** Finds a GitHub Pages link for the repo inside its README. */
-function findDemoUrl(readme: string | null, repo: string): string | null {
-  const pattern = new RegExp(`https://${GITHUB_USER}\\.github\\.io/${repo}/?`, 'i');
-  return readme?.match(pattern)?.[0] ?? null;
-}
-
 export async function getProjects(): Promise<Project[]> {
   const repos = (await fetchRepos()).filter(
     (r) =>
@@ -76,19 +63,14 @@ export async function getProjects(): Promise<Project[]> {
       !r.topics?.includes(HIDE_TOPIC),
   );
 
-  return Promise.all(
-    repos.map(async (r) => {
-      const readme = await fetchReadme(r.name);
-      return {
-        name: r.name,
-        url: r.html_url,
-        homepage: r.homepage || findDemoUrl(readme, r.name),
-        summary: r.description?.trim() || 'Sin descripción.',
-        topics: r.topics ?? [],
-        language: r.language,
-        stars: r.stargazers_count,
-        updatedAt: r.pushed_at,
-      };
-    }),
-  );
+  return repos.map((r) => ({
+    name: r.name,
+    url: r.html_url,
+    homepage: r.homepage?.trim() || null,
+    summary: r.description?.trim() || 'Sin descripción.',
+    topics: r.topics ?? [],
+    language: r.language,
+    stars: r.stargazers_count,
+    updatedAt: r.pushed_at,
+  }));
 }
