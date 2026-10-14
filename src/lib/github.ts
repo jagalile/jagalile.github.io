@@ -9,7 +9,7 @@ export interface Project {
   name: string;
   url: string;
   homepage: string | null;
-  summary: string;
+  summary: string | null;
   topics: string[];
   language: string | null;
   stars: number;
@@ -54,7 +54,15 @@ async function fetchRepos(): Promise<Repo[]> {
   }
 }
 
-export async function getProjects(): Promise<Project[]> {
+let cache: Promise<Project[]> | undefined;
+
+/** Projects to show, fetched once per build and shared by every language. */
+export function getProjects(): Promise<Project[]> {
+  cache ??= loadProjects();
+  return cache;
+}
+
+async function loadProjects(): Promise<Project[]> {
   const repos = (await fetchRepos()).filter(
     (r) =>
       !r.fork &&
@@ -67,7 +75,7 @@ export async function getProjects(): Promise<Project[]> {
     name: r.name,
     url: r.html_url,
     homepage: r.homepage?.trim() || null,
-    summary: r.description?.trim() || 'Sin descripción.',
+    summary: r.description?.trim() || null,
     topics: r.topics ?? [],
     language: r.language,
     stars: r.stargazers_count,

@@ -1,0 +1,44 @@
+---
+import { homePath, languages, useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<nav
+  aria-label={t('language.label')}
+  class="inline-flex rounded-full border border-slate-200 bg-white p-1 text-xs font-semibold shadow-sm dark:border-slate-700 dark:bg-slate-900"
+>
+  {
+    (Object.keys(languages) as Lang[]).map((code) => (
+      <a
+        href={homePath(code)}
+        hreflang={code}
+        lang={code}
+        title={languages[code]}
+        data-lang-option={code}
+        aria-current={code === lang ? 'page' : undefined}
+        class="rounded-full px-2.5 py-1 text-slate-500 uppercase transition hover:text-slate-900 aria-[current=page]:bg-sky-100 aria-[current=page]:text-sky-700 dark:text-slate-400 dark:hover:text-slate-100 dark:aria-[current=page]:bg-sky-950 dark:aria-[current=page]:text-sky-300"
+      >
+        {code}
+      </a>
+    ))
+  }
+</nav>
+
+<script>
+  document.querySelectorAll<HTMLAnchorElement>('[data-lang-option]').forEach((link) =>
+    link.addEventListener('click', (e) => {
+      try {
+        localStorage.setItem('lang', link.dataset.langOption!);
+      } catch {}
+      // Keep the current search and filters when switching language.
+      e.preventDefault();
+      location.href = link.pathname + location.search;
+    }),
+  );
+</script>
