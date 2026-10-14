@@ -5,8 +5,8 @@ Portfolio con todos mis proyectos de GitHub, hecho con [Astro](https://astro.bui
 Los proyectos se leen automáticamente de la API de GitHub al compilar:
 
 - **Etiquetas**: los *topics* del repositorio.
-- **Descripción**: el primer párrafo del README (si no hay, la descripción del repo).
-- **Demo**: la *homepage* del repo, o un enlace a `jagalile.github.io/<repo>` que aparezca en el README.
+- **Descripción**: la descripción del repositorio (sección *About*).
+- **Botón «Pruébalo»**: la *homepage* del repo, o un enlace a `jagalile.github.io/<repo>` que aparezca en el README.
 
 Se excluyen los forks, los repos archivados y los que tengan el topic `no-portfolio`.
 

@@ -28,7 +28,7 @@ const searchText = [project.name, project.summary, project.language, ...tags]
 ---
 
 <article
-  class="project group relative flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-sky-700"
+  class="project group flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-sky-700"
   data-search={searchText}
   data-tags={tags.join(',')}
   data-language={project.language ?? ''}
@@ -38,9 +38,7 @@ const searchText = [project.name, project.summary, project.language, ...tags]
 >
   <header class="flex items-start justify-between gap-3">
     <h2 class="text-lg font-semibold break-words text-slate-900 dark:text-slate-100">
-      <a href={project.url} class="after:absolute after:inset-0 focus:outline-none" target="_blank" rel="noopener">
-        {project.name}
-      </a>
+      {project.name}
     </h2>
     {
       project.stars > 0 && (
@@ -55,7 +53,7 @@ const searchText = [project.name, project.summary, project.language, ...tags]
 
   {
     tags.length > 0 && (
-      <ul class="relative z-10 mt-4 flex flex-wrap gap-1.5">
+      <ul class="mt-4 flex flex-wrap gap-1.5">
         {tags.map((tag) => (
           <li>
             <button
@@ -88,17 +86,37 @@ const searchText = [project.name, project.summary, project.language, ...tags]
         {updated.toLocaleDateString('es-ES', { year: 'numeric', month: 'short' })}
       </time>
     </span>
+  </footer>
+
+  <div class="mt-4 flex gap-2 border-t border-slate-100 pt-4 dark:border-slate-800">
+    <a
+      href={project.url}
+      target="_blank"
+      rel="noopener"
+      class="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+    >
+      <svg class="h-4 w-4" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"
+        ><path
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8Z"
+        ></path></svg
+      >
+      Código
+    </a>
     {
       project.homepage && (
         <a
           href={project.homepage}
           target="_blank"
           rel="noopener"
-          class="relative z-10 rounded-md px-2 py-1 font-medium text-sky-700 hover:bg-sky-50 dark:text-sky-300 dark:hover:bg-sky-950"
+          class="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-sky-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-sky-700 dark:bg-sky-500 dark:text-slate-950 dark:hover:bg-sky-400"
         >
-          Demo ↗
+          Pruébalo
+          <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path d="M11 3a1 1 0 1 0 0 2h2.59l-6.3 6.29a1 1 0 1 0 1.42 1.42L15 6.41V9a1 1 0 1 0 2 0V4a1 1 0 0 0-1-1h-5Z" />
+            <path d="M5 5a2 2 0 0 0-2 2v8c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2v-3a1 1 0 1 0-2 0v3H5V7h3a1 1 0 0 0 0-2H5Z" />
+          </svg>
         </a>
       )
     }
-  </footer>
+  </div>
 </article>
